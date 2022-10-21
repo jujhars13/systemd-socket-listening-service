@@ -1,0 +1,10 @@
+# copy/link to /etc/systemd/system/awesome-service.socket
+[Unit]
+Description=Awesome-service Socket
+PartOf=awesome-service.service
+
+[Socket]
+ListenStream=127.0.0.1:9999
+
+[Install]
+WantedBy=sockets.target

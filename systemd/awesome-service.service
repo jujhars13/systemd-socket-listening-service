@@ -1,0 +1,13 @@
+# copy/link to /etc/systemd/system/awesome-service.service
+[Unit]
+Description=Awesome Service
+After=network.target awesome-service.socket
+Requires=awesome-service.socket
+
+[Service]
+Environment="environment=development"
+ExecStart=/usr/local/bin/node /opt/svc.js
+TimeoutStopSec=5
+
+[Install]
+WantedBy=multi-user.target
