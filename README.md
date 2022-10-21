@@ -6,7 +6,7 @@ Back in the olden days we used to use [init.d](https://en.wikipedia.org/wiki/Ini
 
 [Systemd](https://en.wikipedia.org/wiki/Systemd) also supports this behaviour.  This enables us to do cheaply and reliably do all sorts of funky and clever things such as listen on a port for messages to trigger certain actions (deploy a file, delete the tmp dir, get the status)
 
-HTTP based service is written and tested in Node 18, w/ no deps `/svc`, you can of course use whatever language you want.
+Service is written and tested in Node 18, w/ no deps `/svc`, you can of course use whatever language you want.
 
 ## Using
 
@@ -19,14 +19,24 @@ sudo ln svc/svc.js /opt
 systemctl link --user ${PWD}/systemd/awesome-service.socket
 systemctl link --user ${PWD}/systemd/awesome-service.service
 
-# load your unit files 
-systemctl --user enable awesome-service.socket
-systemctl --user enable awesome-service.service
-
 systemctl --user start awesome-service.service
+systemctl --user start awesome-service.socket
 
+# watch the logs in another window
+journalctl -f --user awesome-service.service
+
+# test the service
+echo "test" | nc 127.0.0.1 9999
+
+# uninstall the service
+systemctl --user disable awesome-service.service
+systemctl --user disable awesome-service.socket
 ```
 
 ## NB
 
-This is just a POC but if I was to deploy this into the wild I'd probably wrap it in a container and front it with a TLS + auth reverse-proxy such as nginx or [caddy](https://caddyserver.com/)
+This is just a POC but if I was to deploy this into the wild I'd probably wrap it in a container and front it with a TLS + auth reverse-proxy such as nginx or [caddy](https://caddyserver.com/) or only use it in a private subnet.  Preferably both.
+
+## TODO
+
+- [ ] write service as a daemon, not a oneshot hack
